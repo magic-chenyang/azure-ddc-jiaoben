@@ -1,5 +1,5 @@
 #!/bin/bash
-sudo su -
+
 apt-get remove -y docker docker-engine
 apt-get update
 apt-get install \
