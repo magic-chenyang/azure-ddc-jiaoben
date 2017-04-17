@@ -18,6 +18,9 @@ add-apt-repository \
    stable"
 apt-get update
 apt-get install -y docker-ce
+docker -v
+echo DOCKER_OPTS="$DOCKER_OPTS --registry-mirror=https://jxfmoz2y.mirror.aliyuncs.com" >> /etc/default/docker
+service docker restart
 docker run hello-world
 docker -v
 #wget https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb
