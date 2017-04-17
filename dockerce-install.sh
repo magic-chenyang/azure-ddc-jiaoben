@@ -16,8 +16,9 @@ add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
-apt-get install docker-ce
+apt-get update
+apt-get install -y docker-ce
 docker run hello-world
-
+docker -v
 #wget https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb
 #sudo dpkg -i docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb
