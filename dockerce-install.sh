@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo su -
-apt-get remove docker docker-engine
+apt-get remove -y docker docker-engine
 apt-get update
 apt-get install \
     linux-image-extra-$(uname -r) \
