@@ -63,16 +63,29 @@ EOF
 		sudo mount -t nfs DDC-01:/opt /opt 
 		sudo bash /opt/manager.sh
 		fi
-	elif [ i -ge 4 ];
+	elif [ i -eq 4 ];
+	then
+		sudo apt-get install nfs-common
+		sudo mount -t nfs DDC-01:/opt /opt 
+		sudo bash /opt/worker.sh
+		sudo docker run -it --rm docker/dtr install \
+  		--dtr-external-url https://$a \
+  		--ucp-node $hostname \
+  		--ucp-username $ucp_admin_username \
+		--ucp-password $ucp_admin_password \
+  		--ucp-insecure-tls \
+  		--ucp-url https://$controller_slb_ip  \
+	elif [ i -ge 5 ];
 	then
 		if [ i -le 6 ];
 		then
 		sudo apt-get install nfs-common
 		sudo mount -t nfs DDC-01:/opt /opt 
 		sudo bash /opt/worker.sh
-#################################
-		sudo docker run -it --rm docker/dtr install \
+
+		sudo docker run -it --rm docker/dtr join \
   		--dtr-external-url https://$a \
+		--existing-replica-id ### \
   		--ucp-node $hostname \
   		--ucp-username $ucp_admin_username \
 		--ucp-password $ucp_admin_password \
