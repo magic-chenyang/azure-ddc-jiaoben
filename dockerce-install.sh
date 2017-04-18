@@ -26,7 +26,7 @@ sudo docker -v
 sudo apt-get install -y expect
 sudo expect <<EOF
 set timeout 300
-spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.0.2.8 --admin-username hydsoft --admin-password hyddocker --interactive
+spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.1.0.4 --admin-username yangchen --admin-password yangchen --san 42.159.113.167 --interactive
 expect "Additional aliases:"
 send "\n"
 expect eof
@@ -37,24 +37,20 @@ a=$(ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}')
 do
 	if [ i -eq 1 ];
 	then
-		
-		sudo docker run --rm -it --name ucp \
-  		-v /var/run/docker.sock:/var/run/docker.sock \
-  		docker/ucp:2.1.2 install \
-  		--debug \
-  		--host-address $a \
-  		--admin-username $ucp_admin_username \
-  		--admin-password $ucp_admin_password \
- 		--san $a \
- 		--san $controller_slb_ip \
-  		--interactive
-
+	sudo apt-get install -y expect
+sudo expect <<EOF
+set timeout 300
+spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.1.0.4 --admin-username yangchen --admin-password yangchen --san 42.159.113.167 --interactive
+expect "Additional aliases:"
+send "\n"
+expect eof
+EOF
 		sudo apt-get update
 		sudo apt-get install -y nfs-kernel-server
 		sudo docker swarm join-token worker|awk 'NR>2{print$0}' > /opt/worker.sh
 		sudo docker swarm join-token manager|awk 'NR>2{print$0}' > /opt/manager.sh
 		sudo tee /etc/exports <<-'EOF' 
-		/opt/ *(rw,sync,no_root_squash,no_subtree_check)
+/opt/ *(rw,sync,no_root_squash,no_subtree_check)
 EOF
 		sudo rpc.mountd
 		sudo service nfs-kernel-server restart
