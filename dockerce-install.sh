@@ -1,6 +1,7 @@
 #!/bin/bash
 
-apt-get remove -y docker docker-engine
+apt-get purge docker-ce -y 
+sudo rm -rf /var/lib/docker
 apt-get update
 apt-get install \
     linux-image-extra-$(uname -r) \
