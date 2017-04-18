@@ -19,7 +19,7 @@ add-apt-repository \
 apt-get update
 apt-get install -y docker-ce
 docker -v
-echo DOCKER_OPTS="$DOCKER_OPTS --registry-mirror=https://jxfmoz2y.mirror.aliyuncs.com" >> /etc/default/docker
+echo "DOCKER_OPTS=\"\$DOCKER_OPTS --registry-mirror=https://24z731hs.mirror.aliyuncs.com\"" | sudo tee -a /etc/default/docker
 service docker restart
 docker run hello-world
 docker -v
