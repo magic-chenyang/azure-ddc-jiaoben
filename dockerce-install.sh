@@ -3,10 +3,10 @@
 apt-get purge docker-ce -y 
 sudo rm -rf /var/lib/docker
 apt-get update
-apt-get install \
+apt-get install -y \
     linux-image-extra-$(uname -r) \
     linux-image-extra-virtual
-apt-get install \
+apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -19,10 +19,61 @@ add-apt-repository \
    stable"
 apt-get update
 apt-get install -y docker-ce
-docker -v
 echo "DOCKER_OPTS=\"\$DOCKER_OPTS --registry-mirror=https://24z731hs.mirror.aliyuncs.com\"" | sudo tee -a /etc/default/docker
 service docker restart
 docker run hello-world
 docker -v
-#wget https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb
-#sudo dpkg -i docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb
+
+i=`hostname`|awk -F 0 `{print$2}`
+a=$(ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}')
+do
+	if [ i -eq 1 ];
+	then
+		
+		docker run --rm -it --name ucp \
+  		-v /var/run/docker.sock:/var/run/docker.sock \
+  		docker/ucp:2.1.2 install \
+  		--debug \
+  		--host-address $a \
+  		--admin-username $ucp_admin_username \
+  		--admin-password $ucp_admin_password \
+ 		--san $a \
+ 		--san $controller_slb_ip \
+  		--interactive
+
+		sudo apt-get update
+		sudo apt-get install -y nfs-kernel-server
+		sudo docker swarm join-token worker|awk 'NR>2{print$0}' > /opt/worker.sh
+		sudo docker swarm join-token manager|awk 'NR>2{print$0}' > /opt/manager.sh
+		tee /etc/exports <<-'EOF' 
+		/opt/ *(rw,sync,no_root_squash,no_subtree_check)
+EOF
+		sudo rpc.mountd
+		sudo service nfs-kernel-server restart
+
+	elif [ i -le 3 ];
+	then
+		if [ i -ge 2 ];
+		then
+		sudo apt-get install -y nfs-common
+		mount -t nfs DDC-01:/opt /opt 
+		bash /opt/manager.sh
+		fi
+	elif [ i -ge 4 ];
+	then
+		if [ i -le 6 ];
+		then
+		sudo apt-get install nfs-common
+		mount -t nfs DDC-01:/opt /opt 
+		bash /opt/worker.sh
+#################################
+		docker run -it --rm docker/dtr install \
+  		--dtr-external-url https://$a \
+  		--ucp-node $hostname \
+  		--ucp-username $ucp_admin_username \
+		--ucp-password $ucp_admin_password \
+  		--ucp-insecure-tls \
+  		--ucp-url https://$controller_slb_ip  \
+		fi
+	fi
+done
