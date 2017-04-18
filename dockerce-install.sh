@@ -47,10 +47,10 @@ expect eof
 EOF
 		sudo apt-get update
 		sudo apt-get install -y nfs-kernel-server
-		sudo docker swarm join-token worker|awk 'NR>2{print$0}' > /opt/worker.sh
-		sudo docker swarm join-token manager|awk 'NR>2{print$0}' > /opt/manager.sh
+		sudo docker swarm join-token worker|awk 'NR>2{print$0}' > /tmp/worker.sh
+		sudo docker swarm join-token manager|awk 'NR>2{print$0}' > /tmp/manager.sh
 		sudo tee /etc/exports <<-'EOF' 
-/opt/ *(rw,sync,no_root_squash,no_subtree_check)
+/tmp/ *(rw,sync,no_root_squash,no_subtree_check)
 EOF
 		sudo rpc.mountd
 		sudo service nfs-kernel-server restart
@@ -60,14 +60,14 @@ EOF
 		if [ i -ge 2 ];
 		then
 		sudo apt-get install -y nfs-common
-		sudo mount -t nfs DDC-01:/opt /opt 
-		sudo bash /opt/manager.sh
+		sudo mount -t nfs DDC-01:/tmp /tmp 
+		sudo bash /tmp/manager.sh
 		fi
 	elif [ i -eq 4 ];
 	then
 		sudo apt-get install nfs-common
-		sudo mount -t nfs DDC-01:/opt /opt 
-		sudo bash /opt/worker.sh
+		sudo mount -t nfs DDC-01:/tmp /tmp 
+		sudo bash /tmp/worker.sh
 		sudo docker run -it --rm docker/dtr install \
   		--dtr-external-url https://$a \
   		--ucp-node $hostname \
@@ -80,8 +80,8 @@ EOF
 		if [ i -le 6 ];
 		then
 		sudo apt-get install nfs-common
-		sudo mount -t nfs DDC-01:/opt /opt 
-		sudo bash /opt/worker.sh
+		sudo mount -t nfs DDC-01:/tmp /tmp
+		sudo bash /tmp/worker.sh
 
 		sudo docker run -it --rm docker/dtr join \
   		--dtr-external-url https://$a \
