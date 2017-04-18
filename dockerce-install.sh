@@ -23,14 +23,14 @@ sudo echo "DOCKER_OPTS=\"\$DOCKER_OPTS --registry-mirror=https://24z731hs.mirror
 sudo service docker restart
 sudo docker run hello-world
 sudo docker -v
-sudo apt-get install -y expect
-sudo expect <<EOF
-set timeout 300
-spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.1.0.4 --admin-username yangchen --admin-password yangchen --san 42.159.113.167 --interactive
-expect "Additional aliases:"
-send "\n"
-expect eof
-EOF
+#sudo apt-get install -y expect
+#sudo expect <<EOF
+#set timeout 300
+#spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.1.0.4 --admin-username yangchen --admin-password yangchen --san 42.159.113.167 --interactive
+#expect "Additional aliases:"
+#send "\n"
+#expect eof
+#EOF
 
 i=`hostname`|awk -F 0 `{print$2}`
 a=$(ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}')
