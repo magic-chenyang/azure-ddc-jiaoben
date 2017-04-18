@@ -23,7 +23,7 @@ sudo echo "DOCKER_OPTS=\"\$DOCKER_OPTS --registry-mirror=https://24z731hs.mirror
 sudo service docker restart
 sudo docker run hello-world
 sudo docker -v
-sudo apt-get install expect
+sudo apt-get install -y expect
 sudo expect <<EOF
 set timeout 300
 spawn docker run --rm -it --name ucp   -v /var/run/docker.sock:/var/run/docker.sock   docker/ucp:2.1.2 install  --host-address 10.0.2.8 --admin-username hydsoft --admin-password hyddocker --interactive
