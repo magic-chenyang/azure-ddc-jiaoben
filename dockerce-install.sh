@@ -32,7 +32,7 @@ sudo docker -v
 #expect eof
 #EOF
 
-i=`hostname`|awk -F 0 `{print$2}`
+i=$(hostname|awk -F 0 '{print$2}')
 a=$(ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}')
 do
 	if [ i -eq 1 ];
@@ -65,7 +65,7 @@ EOF
 		fi
 	elif [ i -eq 4 ];
 	then
-		sudo apt-get install nfs-common
+		sudo apt-get install -y nfs-common
 		sudo mount -t nfs DDC-01:/tmp /tmp 
 		sudo bash /tmp/worker.sh
 		sudo docker run -it --rm docker/dtr install \
@@ -79,7 +79,7 @@ EOF
 	then
 		if [ i -le 6 ];
 		then
-		sudo apt-get install nfs-common
+		sudo apt-get install -y nfs-common
 		sudo mount -t nfs DDC-01:/tmp /tmp
 		sudo bash /tmp/worker.sh
 
