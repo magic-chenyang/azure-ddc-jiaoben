@@ -1,4 +1,31 @@
 #!/bin/bash
+# 安装azure-cli 0.10.12 版本
+if [ $(azure -v)! = 0.10.12 ];
+then
+
+        apt-get update
+        apt-get -y install nodejs
+        apt-get -y install npm
+        cd /usr/local/lib
+        npm uninstall azure-cli
+        #wget https://github.com/Azure/azure-xplat-cli/archive/v0.9.18-hotfix.tar.gz 
+        npm install -g azure-cli
+        echo $(azure -v)
+else
+        echo "azure-cli is exists"
+fi
+
+azure --completion >> ~/azure.completion.sh
+echo 'source ~/azure.completion.sh' >> ~/.bash_profile
+#补全命令
+#wget https://github.com/magic-chenyang/testone/blob/master/azure.completion.sh -P /root
+
+# 登录azure 切换arm
+read -p "请输入登录Azure订阅账号(UserName@oceandata2016.partner.onmschina.cn)" $UserName
+azure login -e AzureChinaCloud -u $UserName@oceandata2016.partner.onmschina.cn
+azure config mode arm
+
+
 read -p "请输入您所需要创建的资源组名称" ResourceGroup
 read -p "输入虚拟机用户,密码(至少8位,必须包含一个大写字母,一个小写字母,一个数字,一个特殊符号!@#$%^&+=),名称" vmusername vmpassword 
 read -p "请输入您需要创建的公共IP名称"  PublicIP
